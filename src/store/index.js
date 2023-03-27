@@ -17,22 +17,14 @@ export default new Vuex.Store({
       },
       {
         id: 2,
-        email: 'john.smith@example.com',
-        phone: '15551234567',
-        nickName: 'johnsmith',
-        name: 'John Smith',
-        ip: '162.158.146.25'
-      },
-      {
-        id: 3,
         email: 'maria.sergeeva@example.com',
         phone: '74959876543',
         nickName: 'mariasergeeva',
         name: 'Мария Сергеева',
-        ip: '213.180.193.250'
+        ip: '2001:0db8:11a3:09d7:1f34:8a2e:07a0:765d'
       },
       {
-        id: 4,
+        id: 3,
         email: 'chloe.martin@example.com',
         phone: '33123456789',
         nickName: 'chloemartin',
@@ -40,7 +32,7 @@ export default new Vuex.Store({
         ip: '82.146.63.34'
       },
       {
-        id: 5,
+        id: 4,
         email: 'petr.petrov@example.com',
         phone: '78121234567',
         nickName: 'petrpetrov',
@@ -48,7 +40,7 @@ export default new Vuex.Store({
         ip: '91.198.174.192'
       },
       {
-        id: 6,
+        id: 5,
         email: 'juan.perez@example.com',
         phone: '34612345678',
         nickName: 'juanperez',
@@ -56,7 +48,7 @@ export default new Vuex.Store({
         ip: '104.18.61.201'
       },
       {
-        id: 7,
+        id: 6,
         email: 'anna.kuznetsova@example.com',
         phone: '73831234567',
         nickName: 'annakuznetsova',
@@ -64,15 +56,7 @@ export default new Vuex.Store({
         ip: '162.158.146.25'
       },
       {
-        id: 8,
-        email: 'olga.sidorova@example.com',
-        phone: '74959876543',
-        nickName: 'olgasidorova',
-        name: 'Ольга Сидорова',
-        ip: '93.184.216.34'
-      },
-      {
-        id: 9,
+        id: 7,
         email: 'emma.brown@example.com',
         phone: '442071234567',
         nickName: 'emmabrown',
@@ -80,7 +64,7 @@ export default new Vuex.Store({
         ip: '192.0.2.146'
       },
       {
-        id: 10,
+        id: 8,
         email: 'mikhail.sokolov@example.com',
         phone: '79041234567',
         nickName: 'mikhailsokolov',
@@ -88,7 +72,7 @@ export default new Vuex.Store({
         ip: '198.51.100.14'
       },
       {
-        id: 11,
+        id: 9,
         email: 'ivan@example.com',
         phone: '79998564567',
         nickName: 'ivanov',

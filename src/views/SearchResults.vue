@@ -5,7 +5,7 @@
     </router-link>
 
     <div v-if="getResult.length">
-      <h3 class="uk-text-center">Результаты поиска по запросу: {{ input }}</h3>
+      <h3 class="uk-text-center">Результаты поиска по {{ changeText }}: {{ queryObj.input }}</h3>
 
       <User v-for="user in getResult" :key="user.id" :user="user" />
     </div>
@@ -13,7 +13,9 @@
     <div class="uk-text-center" v-else>
       <span class="uk-icon uk-margin-bottom" uk-icon="icon: user; ratio: 3"></span>
 
-      <h3 class="uk-text-danger">Результаты по запросу: "{{ input }}" не найдены</h3>
+      <h3 class="uk-text-danger">
+        Результаты по {{ changeText }}: "{{ queryObj.input }}" не найдены
+      </h3>
     </div>
   </div>
 </template>
@@ -27,37 +29,25 @@ export default {
     User
   },
   data: () => ({
-    input: ''
+    queryObj: {}
   }),
-  async created() {
-    const queryObj = {
+  created() {
+    this.queryObj = {
       keyName: this.$route.query.keyName,
-      query: this.$route.query.query
+      query: this.$route.query.query,
+      input: this.$route.query.input
     };
 
-    this.input = queryObj.query;
-    queryObj.query = await this.normalizeQuery(queryObj);
-    this.$store.dispatch('search', queryObj);
+    this.$store.dispatch('search', this.queryObj);
   },
   computed: {
-    ...mapGetters(['getResult'])
-  },
-  methods: {
-    normalizeQuery({ keyName, query }) {
-      if (keyName === 'phone') {
-        const formattedNumber = query.replace(/[^\d]/g, '');
-        return formattedNumber;
-      }
-
-      if (keyName === 'nickName') {
-        return query.includes('@') ? query.split('@').join('') : query;
-      }
-
-      if (keyName === 'name') {
-        return query.toLowerCase();
-      }
-
-      return query;
+    ...mapGetters(['getResult']),
+    changeText() {
+      const { keyName } = this.queryObj;
+      if (keyName === 'phone') return 'телефону';
+      if (keyName === 'nickName') return 'псевдониму';
+      if (keyName === 'name') return 'имени и фамилии';
+      return keyName;
     }
   }
 };

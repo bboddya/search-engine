@@ -28,6 +28,9 @@
 </template>
 
 <script>
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import { isIPV6Address, isIPV4Address } from 'ip-address-validator';
+
 export default {
   data() {
     return {
@@ -43,52 +46,73 @@ export default {
         const matchedQuery = this.keyMatch(this.input);
 
         if (matchedQuery) {
+          matchedQuery.query = this.normalizeQuery(matchedQuery);
+
           const { query, keyName } = matchedQuery;
-          this.$router.push({ name: 'SearchResults', query: { query, keyName } });
+          this.$router.push({
+            name: 'SearchResults',
+            query: { query, keyName, input: this.input }
+          });
         } else {
           this.error = 'Не удалось определить тип запроса';
         }
       }
     },
     keyMatch(query) {
-      if (query.match(/^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/)) {
-        return {
-          keyName: 'email',
-          query
-        };
-      }
-
-      if (query.match(/^(?:\+)?\d{1,3}[-\s]?\(?\d{3}\)?[-\s]?\d{3}[-\s]?\d{2}[-\s]?\d{2}$/)) {
+      const number = query.includes('+') ? query : '+' + query;
+      const phoneNumber = parsePhoneNumberFromString(number);
+      if (phoneNumber && phoneNumber.isValid()) {
         return {
           keyName: 'phone',
           query
         };
       }
 
-      if (query.match(/^@?[\w\d_]+$/)) {
+      if (query.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        return {
+          keyName: 'email',
+          query
+        };
+      }
+
+      if (query.match(/^@?[a-zA-Z]*[a-zA-Z_]+\w*$/)) {
         return {
           keyName: 'nickName',
           query
         };
       }
 
-      if (query.match(/^[a-zA-Zа-яА-Я]+\s[a-zA-Zа-яА-Я]+$/)) {
-        return {
-          keyName: 'name',
-          query
-        };
-      }
-
-      if (
-        query.match(
-          /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$/
-        )
-      ) {
+      if (isIPV4Address(query) || isIPV6Address(query)) {
         return {
           keyName: 'ip',
           query
         };
       }
+
+      let fullName = query.split(' ').filter((str) => str.length);
+
+      if (query.match(/^[\p{L}\s\-]+$/u) && fullName.length === 2) {
+        return {
+          keyName: 'name',
+          query: fullName.join(' ')
+        };
+      }
+    },
+    normalizeQuery({ keyName, query }) {
+      if (keyName === 'phone') {
+        const formattedNumber = query.replace(/[^\d]/g, '');
+        return formattedNumber;
+      }
+
+      if (keyName === 'nickName') {
+        return query.includes('@') ? query.split('@').join('') : query;
+      }
+
+      if (keyName === 'name') {
+        return query.toLowerCase();
+      }
+
+      return query;
     }
   }
 };
